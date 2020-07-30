@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
-        webSettings.setJavaScriptEnabled(true);
         //webSettings.setAllowContentAccess(true);
         //webSettings.setAllowFileAccess(true);
         //webSettings.setDatabaseEnabled(true);
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setSaveFormData(true);
         mWebView.setWebViewClient(new UriWebViewClient());
         mWebView.setWebChromeClient(new UriChromeClient());
-        mWebView.getSettings().setSavePassword(true);
         mWebView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; Pixel) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.93 Mobile Safari/537.36\\t");
 
         progressBar.setMax(100);
@@ -111,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                             "Oups!Can't open Facebook messenger right now. Please try again later.",
                             Toast.LENGTH_SHORT).show();
                 }
+                return true;
+            } else if (url.startsWith("https://v-shopping.vn")) {
+                mWebView.loadUrl(url);
                 return true;
             } else {
                 if (builder.isShowing() || mWebViewPop.isShown()) {
