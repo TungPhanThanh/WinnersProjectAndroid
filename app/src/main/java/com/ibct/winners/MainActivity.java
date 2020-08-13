@@ -95,13 +95,8 @@ public class MainActivity extends AppCompatActivity {
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             String url = request.getUrl().toString();
             Log.d("shouldOverrideUrlLoading", url);
-            if (url.startsWith("tel:")) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-                return true;
-            } else if (url.startsWith("https://www.m.me/")) {
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            if (url.startsWith("https://www.m.me/")) {
                 try {
                     startActivity(intent);
                 } catch (ActivityNotFoundException ex) {
@@ -109,24 +104,30 @@ public class MainActivity extends AppCompatActivity {
                             "Oups!Can't open Facebook messenger right now. Please try again later.",
                             Toast.LENGTH_SHORT).show();
                 }
-                return true;
-            } else if (url.startsWith("https://v-shopping.vn")) {
-                mWebView.loadUrl(url);
-                return true;
+                return false;
             } else {
-                if (builder.isShowing() || mWebViewPop.isShown()) {
-                    mWebViewPop.destroy();
-                    builder.dismiss();
+                String host = Uri.parse(url).getHost();
+                if (host!= null && host.equals("v-shopping.vn")) {
+                    if (mWebViewPop != null) {
+                        mWebViewPop.setVisibility(View.GONE);
+                        mWebView.removeView(mWebViewPop);
+                        mWebViewPop = null;
+                    }
+                    return false;
+                } else if (host != null) {
+                    if (host.equals("m.facebook.com") || host.equals("www.facebook.com")) {
+                        return false;
+                    } else if (host.equals("accounts.google.com") || host.equals("www.accounts.google.com")) {
+                        return false;
+                    }
                 }
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                } catch (ActivityNotFoundException ex) {
-                    Toast.makeText(getApplicationContext(),
-                            "Oops! Something went wrong.",
-                            Toast.LENGTH_SHORT).show();
-                }
-                return true;
             }
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                Toast.makeText(getApplicationContext(), "Oops! Something went wrong.", Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
 
         @Override
