@@ -1,4 +1,4 @@
-package com.ibct.winners.service;
+package com.ibct.vshopping.service;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import android.util.Log;

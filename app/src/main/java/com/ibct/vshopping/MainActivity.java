@@ -1,4 +1,4 @@
-package com.ibct.winners;
+package com.ibct.vshopping;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

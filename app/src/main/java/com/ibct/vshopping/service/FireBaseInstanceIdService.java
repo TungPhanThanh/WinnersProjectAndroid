@@ -1,4 +1,4 @@
-package com.ibct.winners.service;
+package com.ibct.vshopping.service;
 
 
 import android.app.NotificationChannel;
@@ -17,8 +17,8 @@ import androidx.work.WorkManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.ibct.winners.MainActivity;
-import com.ibct.winners.R;
+import com.ibct.vshopping.MainActivity;
+import com.ibct.vshopping.R;
 
 public class FireBaseInstanceIdService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";

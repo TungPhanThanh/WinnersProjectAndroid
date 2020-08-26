@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "454114403898",
-    "firebase_url": "https://push-alarm-3e46c.firebaseio.com",
-    "project_id": "push-alarm-3e46c",
-    "storage_bucket": "push-alarm-3e46c.appspot.com"
+    "project_number": "450136580206",
+    "firebase_url": "https://v-shopping-284303.firebaseio.com",
+    "project_id": "v-shopping-284303",
+    "storage_bucket": "v-shopping-284303.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:454114403898:android:5863931df5f7bfb4847703",
+        "mobilesdk_app_id": "1:450136580206:android:9ad8759ea84bd0c38f867f",
         "android_client_info": {
-          "package_name": "com.ibct.winners"
+          "package_name": "com.ibct.vshopping"
         }
       },
       "oauth_client": [
         {
-          "client_id": "454114403898-b5vat5imeb5v8nfl83p54pnkv2516v29.apps.googleusercontent.com",
+          "client_id": "450136580206-phll95og87qji2tmo4l6hdgf87tjv4kp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFARGf3tzLwWGY_KJutWTEcA_0UDj84ZU"
+          "current_key": "AIzaSyDViJbRL1Bsv_WDiyNgyatA_IT9iTMdQJU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "454114403898-b5vat5imeb5v8nfl83p54pnkv2516v29.apps.googleusercontent.com",
+              "client_id": "450136580206-phll95og87qji2tmo4l6hdgf87tjv4kp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

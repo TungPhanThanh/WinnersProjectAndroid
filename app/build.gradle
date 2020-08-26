@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "com.ibct.winners"
+        applicationId "com.ibct.vshopping"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 4

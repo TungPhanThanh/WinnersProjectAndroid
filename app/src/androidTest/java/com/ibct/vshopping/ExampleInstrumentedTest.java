@@ -1,4 +1,4 @@
-package com.ibct.winners;
+package com.ibct.vshopping;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.ibct.winners", appContext.getPackageName());
+        assertEquals("com.ibct.vshopping", appContext.getPackageName());
     }
 }
