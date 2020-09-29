@@ -37,6 +37,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String USER_AGENT = "Mozilla/5.0 (Linux; Android 9; Pixel) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.93 Mobile Safari/537.36\\t";
     private ViewDialog mAlertDialogExit = new ViewDialog();
 
     private ProgressBar progressBar;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SetupFirebase();
+        mContext = this.getApplicationContext();
 
         mWebView = findViewById(R.id.webview);
         progressBar = findViewById(R.id.progress_bar_webview);
@@ -63,30 +64,37 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
-        //webSettings.setAllowContentAccess(true);
-        //webSettings.setAllowFileAccess(true);
-        //webSettings.setDatabaseEnabled(true);
+        webSettings.setAllowContentAccess(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setDatabaseEnabled(true);
 
-        mWebView.getSettings().setSavePassword(true);
-        mWebView.getSettings().setSaveFormData(true);
-        mWebView.setWebViewClient(new UriWebViewClient());
-        mWebView.setWebChromeClient(new UriChromeClient());
-        mWebView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 9; Pixel) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.93 Mobile Safari/537.36\\t");
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+
+        webSettings.setSavePassword(true);
+        webSettings.setSaveFormData(true);
+        webSettings.setUserAgentString(USER_AGENT);
+
+        mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        mWebView.setScrollbarFadingEnabled(false);
 
         progressBar.setMax(100);
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
         cookieManager.setAcceptThirdPartyCookies(mWebView, true);
-        mWebView.loadUrl("https://v-shopping.vn");
-        mContext = this.getApplicationContext();
-
+        mWebView.setWebViewClient(new UriWebViewClient());
+        mWebView.setWebChromeClient(new UriChromeClient());
+        mWebView.loadUrl("https://www.v-shopping.vn");
     }
 
     private class UriWebViewClient extends WebViewClient {
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler,
                                        SslError error) {
-            Log.d("onReceivedSslError", "onReceivedSslError");
             //super.onReceivedSslError(view, handler, error);
         }
 
@@ -94,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             String url = request.getUrl().toString();
-            Log.d("shouldOverrideUrlLoading", url);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             if (url.startsWith("https://www.m.me/")) {
                 try {
@@ -107,25 +114,42 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             } else {
                 String host = Uri.parse(url).getHost();
-                if (host!= null && host.equals("v-shopping.vn")) {
-                    if (mWebViewPop != null) {
-                        mWebViewPop.setVisibility(View.GONE);
-                        mWebView.removeView(mWebViewPop);
-                        mWebViewPop = null;
-                    }
-                    return false;
-                } else if (host != null) {
-                    if (host.equals("m.facebook.com") || host.equals("www.facebook.com")) {
-                        return false;
-                    } else if (host.equals("accounts.google.com") || host.equals("www.accounts.google.com")) {
-                        return false;
+                if (host != null) {
+                    switch (host) {
+                        case "wwww.v-shopping.vn":
+                            if (mWebViewPop != null) {
+                                mWebViewPop.setVisibility(View.GONE);
+                                mWebView.removeView(mWebViewPop);
+                                mWebViewPop = null;
+                            }
+                            mWebView.loadUrl(url);
+                            return false;
+                        case "m.facebook.com":
+                        case "www.facebook.com":
+                        case "accounts.google.com":
+                        case "www.accounts.google.com":
+                            return false;
+                        case "":
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException ex) {
+                                Toast.makeText(getApplicationContext(), "Oops! Something went wrong.", Toast.LENGTH_SHORT).show();
+                            }
+                            break;
+                        default:
+                            if (builder != null) {
+                                builder.dismiss();
+                            }
+                            if (mWebViewPop != null) {
+                                mWebViewPop.setVisibility(View.GONE);
+                                mWebView.removeView(mWebViewPop);
+                                mWebViewPop = null;
+                            }
+                            mWebView.loadUrl(url);
+                            break;
                     }
                 }
-            }
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException ex) {
-                Toast.makeText(getApplicationContext(), "Oops! Something went wrong.", Toast.LENGTH_SHORT).show();
+
             }
             return true;
         }
@@ -169,14 +193,41 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
                                       boolean isUserGesture, Message resultMsg) {
+            System.getProperty("https.agent");
             mWebViewPop = new WebView(mContext);
             mWebViewPop.setVerticalScrollBarEnabled(false);
             mWebViewPop.setHorizontalScrollBarEnabled(false);
             mWebViewPop.setWebViewClient(new UriWebViewClient());
             mWebViewPop.setWebChromeClient(new UriChromeClient());
-            mWebViewPop.getSettings().setJavaScriptEnabled(true);
-            mWebViewPop.getSettings().setSavePassword(true);
-            mWebViewPop.getSettings().setSaveFormData(true);
+            WebSettings webSettings = mWebViewPop.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+            webSettings.setAppCacheEnabled(true);
+            webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+            webSettings.setSupportMultipleWindows(true);
+            webSettings.setAllowContentAccess(true);
+            webSettings.setAllowFileAccess(true);
+            webSettings.setDatabaseEnabled(true);
+
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setUseWideViewPort(true);
+
+            webSettings.setSupportZoom(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setDisplayZoomControls(false);
+
+            mWebViewPop.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+            mWebViewPop.setScrollbarFadingEnabled(false);
+
+            webSettings.setSavePassword(true);
+            webSettings.setSaveFormData(true);
+            webSettings.setUserAgentString(USER_AGENT);
+
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
+            cookieManager.setAcceptThirdPartyCookies(mWebViewPop, true);
+
+            mWebViewPop.setWebViewClient(new UriWebViewClient());
+            mWebViewPop.setWebChromeClient(new UriChromeClient());
 
             builder = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT).create();
 
@@ -186,18 +237,18 @@ public class MainActivity extends AppCompatActivity {
             builder.setButton("Close", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    mWebViewPop.destroy();
+                    if (mWebViewPop != null)
+                        mWebViewPop.destroy();
                     dialog.dismiss();
                 }
             });
 
-            builder.show();
-            builder.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.setAcceptCookie(true);
-            cookieManager.setAcceptThirdPartyCookies(mWebViewPop, true);
-
+            try {
+                builder.show();
+                builder.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
             WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
             transport.setWebView(mWebViewPop);
             resultMsg.sendToTarget();
@@ -278,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             for (String key : getIntent().getExtras().keySet()) {
                 Object value = getIntent().getExtras().get(key);
-                Log.d(TAG, "Key: " + key + " Value: " + value);
             }
         }
     }

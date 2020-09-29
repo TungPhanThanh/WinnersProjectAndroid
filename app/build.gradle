@@ -9,8 +9,8 @@ android {
         applicationId "com.ibct.vshopping"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 4
-        versionName "4.0.1"
+        versionCode 5
+        versionName "4.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
